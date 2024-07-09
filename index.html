@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Data with WebSockets</title>
+</head>
+<body>
+    <h1>Mouse Data with WebSockets</h1>
+    <p>Move your mouse around the page to send data to the server.</p>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8765');
+
+        // Connection opened
+        socket.addEventListener('open', function (event) {
+            console.log('WebSocket is connected.');
+        });
+
+        // Listen for messages
+        socket.addEventListener('message', function (event) {
+            console.log('Message from server ', event.data);
+        });
+
+        // Handle errors
+        socket.addEventListener('error', function (event) {
+            console.error('WebSocket error: ', event);
+        });
+
+        function sendMouseData(event) {
+            const mouseData = `NoClick,${event.clientX},${event.clientY}`;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(mouseData);
+            }
+        }
+
+        function sendMouseClick(event) {
+            const clickData = `Click,${event.clientX},${event.clientY}`;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(clickData);
+            }
+        }
+        function sendEsc(event) {
+            const clickData = `ESC,${event.clientX},${event.clientY}`;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(clickData);
+            }
+        }
+
+        document.addEventListener('mousemove', sendMouseData);
+        document.addEventListener('click', sendMouseClick);
+    </script>
+</body>
+</html>
